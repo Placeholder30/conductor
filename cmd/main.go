@@ -21,11 +21,11 @@ func main() {
 		Password: config.Envs.Password,
 		Dbname:   config.Envs.Dbname,
 	}
-	server := api.NewApiServer(":8081", cfg)
 
 	db, err := db.NewPostgresStorage(*cfg)
-
 	initStorage(db)
+
+	server := api.NewApiServer(":8081", db)
 
 	if err != nil {
 		slog.Error(err.Error())

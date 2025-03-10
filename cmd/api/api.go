@@ -1,29 +1,28 @@
 package api
 
 import (
+	"database/sql"
 	"fmt"
 	"log/slog"
 	"net/http"
-
-	"github.com/placeholder30/conductor/cmd/config"
 )
 
 type apiServer struct {
 	port string
-	db   *config.PgConfig
+	db   *sql.DB
 }
 
-func NewApiServer(port string, cfg *config.PgConfig) *apiServer {
+func NewApiServer(port string, db *sql.DB) *apiServer {
 	return &apiServer{
 		port: port,
-		db:   cfg,
+		db:   db,
 	}
 }
 
 func (a *apiServer) Run() error {
 	mux := http.Server{
 		Addr:    a.port,
-		Handler: nil,
+		Handler: Muxer(a.db),
 	}
 	slog.Info(fmt.Sprintf("server is running on port %s", a.port))
 	return mux.ListenAndServe()

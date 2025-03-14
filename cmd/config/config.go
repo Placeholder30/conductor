@@ -16,6 +16,11 @@ type PgConfig struct {
 	Dbname   string
 }
 
+type AppConfig struct {
+	PORT string
+	PgConfig
+}
+
 var Envs = initConfig()
 
 func (config PgConfig) FormatDSN() string {
@@ -24,15 +29,18 @@ func (config PgConfig) FormatDSN() string {
 		config.Host, config.Port, config.User, config.Password, config.Dbname)
 }
 
-func initConfig() PgConfig {
+func initConfig() AppConfig {
 	godotenv.Load()
 
-	return PgConfig{
-		Host:     getEnv("PG_HOST", "localhost"),
-		Port:     getEnvAsInt("PG_PORT", 5432),
-		User:     getEnv("PG_USER", "postgres"),
-		Password: getEnv("PG_PASSWORD", "mysecretpassword"),
-		Dbname:   getEnv("PG_DB_NAME", "conductor"),
+	return AppConfig{
+		PORT: getEnv("PORT", ":8081"),
+		PgConfig: PgConfig{
+			Host:     getEnv("PG_HOST", "localhost"),
+			Port:     getEnvAsInt("PG_PORT", 5432),
+			User:     getEnv("PG_USER", "postgres"),
+			Password: getEnv("PG_PASSWORD", "mysecretpassword"),
+			Dbname:   getEnv("PG_DB_NAME", "conductor"),
+		},
 	}
 }
 

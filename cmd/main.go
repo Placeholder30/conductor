@@ -25,7 +25,7 @@ func main() {
 	db, err := db.NewPostgresStorage(*cfg)
 	initStorage(db)
 
-	server := api.NewApiServer(":8081", db)
+	server := api.NewApiServer(config.Envs.PORT, db)
 
 	if err != nil {
 		slog.Error(err.Error())
